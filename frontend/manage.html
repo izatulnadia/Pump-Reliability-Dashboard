@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage readings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Manage readings</h1>
+      <p>Create, read, update and delete the readings of a pump</p>
+    </div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/manage.html" class="active">Manage readings</a>
+    </nav>
+    <select id="pump"></select>
+  </header>
+
+  <main>
+    <h2>Add a reading</h2>
+    <form onsubmit="addReading(event)">
+      <input id="vibration" type="number" step="any" placeholder="Vibration (mm/s)" required>
+      <input id="bearing_temp" type="number" step="any" placeholder="Bearing temp (°C)" required>
+      <input id="discharge_pressure" type="number" step="any" placeholder="Pressure (bar)" required>
+      <input id="flow" type="number" step="any" placeholder="Flow (m³/h)" required>
+      <button>Add reading</button>
+    </form>
+
+    <h2>Latest readings (newest first)</h2>
+    <table>
+      <tr><th>ID</th><th>Time</th><th>Vibration</th><th>Bearing temp</th><th>Pressure</th><th>Flow</th><th>Actions</th></tr>
+      <tbody id="table"></tbody>
+    </table>
+  </main>
+
+  <script src="api.js"></script>
+  <script src="manage.js"></script>
+</body>
+</html>

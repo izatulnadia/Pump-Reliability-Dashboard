@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pump Reliability Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js draws the graphs (loaded from the internet) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Pump Reliability Dashboard</h1>
+      <p id="updated">Starting...</p>
+    </div>
+    <nav>
+      <a href="/" class="active">Dashboard</a>
+      <a href="/manage.html">Manage readings</a>
+    </nav>
+    <div>
+      <select id="pump"></select>
+      <label><input type="checkbox" id="live" checked style="width:auto"> Live (every 5 s)</label>
+    </div>
+  </header>
+
+  <main>
+    <h2 id="title">Pump</h2>
+
+    <!-- Top row: pump picture and indicator tiles -->
+    <div class="top">
+      <div class="picture" id="pumpImage"></div>
+      <div id="indicators"></div>
+    </div>
+
+    <h2>Parameters</h2>
+    <div id="cards"></div>
+
+    <h2>Trend and forecast</h2>
+    <div id="charts">
+      <div><canvas id="chart_vibration"></canvas></div>
+      <div><canvas id="chart_bearing_temp"></canvas></div>
+      <div><canvas id="chart_discharge_pressure"></canvas></div>
+      <div><canvas id="chart_flow"></canvas></div>
+    </div>
+
+    <h2>Insight</h2>
+    <div class="panel">
+      <div class="cols">
+        <div>
+          <h4>What the data says</h4>
+          <ul id="insightList"></ul>
+        </div>
+        <div>
+          <h4>Written insight from AI</h4>
+          <button onclick="askAI()">Ask AI</button>
+          <pre id="insight">Click the button to get the AI insight.</pre>
+        </div>
+      </div>
+    </div>
+
+    <h2>Root cause analysis</h2>
+    <div class="panel" id="rca"></div>
+  </main>
+
+  <!-- The JavaScript files. The order matters: dashboard.js must be last. -->
+  <script src="api.js"></script>
+  <script src="pump-picture.js"></script>
+  <script src="charts.js"></script>
+  <script src="panels.js"></script>
+  <script src="dashboard.js?v=20261026-6"></script>
+</body>
+</html>

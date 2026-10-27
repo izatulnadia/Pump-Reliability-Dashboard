@@ -1,0 +1,58 @@
+:root { --ink:#1d2b36; --steel:#3d5a73; --panel:#eef1f3; --normal:#2f7d5b; --warning:#d98e04; --alarm:#c0392b; }
+body { font-family: Bahnschrift, "Segoe UI", Arial, sans-serif; background: var(--panel); color: var(--ink); margin: 0; }
+h2 { font-size: 18px; margin: 28px 0 10px; color: var(--steel); }
+main { padding: 10px 40px 40px; }
+
+/* header and menu */
+header { background: var(--ink); color: white; padding: 16px 40px; display: flex; flex-wrap: wrap;
+         gap: 15px; justify-content: space-between; align-items: center; }
+header h1 { margin: 0; font-size: 24px; }
+header p { margin: 4px 0 0; color: #a9bccb; font-size: 14px; }
+nav a { color: #a9bccb; text-decoration: none; margin-right: 20px; }
+nav a.active { color: white; border-bottom: 3px solid white; }
+
+/* status colours: every box has the class normal, warning or alarm */
+.box { background: white; border-left: 8px solid var(--normal); padding: 16px; }
+.warning { border-left-color: var(--warning); }
+.alarm { border-left-color: var(--alarm); }
+.warning .fill { background: var(--warning); }
+.alarm .fill { background: var(--alarm); }
+
+/* top row: pump picture (left) and indicators (right) */
+.top { display: flex; flex-wrap: wrap; gap: 16px; }
+.top .picture { flex: 1 1 460px; background: white; padding: 10px; }
+#indicators { flex: 1 1 380px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tile small { color: var(--steel); }
+.tile b { display: block; font-size: 24px; margin-top: 6px; }
+
+/* parameter cards and bars */
+#cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.big { font-size: 36px; font-weight: bold; }
+.track { background: #dde3e8; height: 12px; margin: 8px 0 4px; }
+.fill { height: 12px; background: var(--normal); }
+.ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--steel); }
+
+/* graphs: all four in ONE row (2 per row only on small screens) */
+#charts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+#charts div { background: white; padding: 8px; height: 250px; position: relative; min-width: 0; }
+@media (max-width: 900px) { #charts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* insight and root cause panels */
+.panel { background: white; padding: 4px 22px 20px; margin-bottom: 16px; border-left: 8px solid var(--steel); }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+.cols h4 { margin: 0 0 8px; color: var(--steel); }
+.cols ul, .cols ol { margin: 0; padding-left: 18px; line-height: 1.55; }
+.cols p { margin: 0; line-height: 1.55; }
+.cause-head { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: baseline; margin-bottom: 14px; }
+.cause-head b { font-size: 20px; }
+.chip { background: var(--panel); padding: 3px 10px; font-size: 13px; }
+
+/* AI box, forms, tables */
+#insight { white-space: pre-wrap; font-family: inherit; line-height: 1.5; margin: 12px 0 0; }
+input { padding: 8px; width: 140px; border: 1px solid #aab6c0; }
+select { padding: 8px; font-size: 15px; }
+button { padding: 8px 14px; background: var(--steel); color: white; border: none; cursor: pointer; }
+button.delete { background: var(--alarm); }
+table { width: 100%; background: white; border-collapse: collapse; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid #dde3e8; }
+th { background: var(--steel); color: white; }
