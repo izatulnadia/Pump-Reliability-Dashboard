@@ -56,3 +56,6 @@ button.delete { background: var(--alarm); }
 table { width: 100%; background: white; border-collapse: collapse; }
 th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid #dde3e8; }
 th { background: var(--steel); color: white; }
+
+[hidden] { display: none !important; }
+.error { color: #c0392b; }

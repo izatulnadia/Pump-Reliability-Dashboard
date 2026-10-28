@@ -9,12 +9,28 @@
 const SAME_SITE = location.hostname.endsWith("onrender.com") || location.hostname === "localhost" || location.hostname === "127.0.0.1";
 const API_BASE = SAME_SITE ? "" : "https://pump-reliability-dashboard.onrender.com";
 
+// The admin password, kept only until the browser tab is closed.
+function getPassword() {
+  try { return sessionStorage.getItem("adminPassword") || ""; } catch { return ""; }
+}
+function setPassword(password) {
+  try {
+    if (password) sessionStorage.setItem("adminPassword", password);
+    else sessionStorage.removeItem("adminPassword");
+  } catch {}
+}
+
 async function api(url, method = "GET", body = null) {
   const response = await fetch(API_BASE + url, {
     method: method,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-Admin-Password": getPassword() },
     body: body ? JSON.stringify(body) : null,
   });
+  if (response.status === 401) {                // wrong password: sign out
+    setPassword("");
+    if (typeof signedOut === "function") signedOut();
+    throw new Error("Wrong or missing admin password.");
+  }
   return response.json();
 }
 

@@ -55,7 +55,37 @@ async function deleteReading(id) {
 
 // api.js calls this when you choose another pump
 function pumpChanged() {
-  showTable();
+  if (getPassword()) showTable();
 }
 
-loadPumpList().then(showTable);
+// SIGN IN: check the password with the backend
+async function signIn(event) {
+  event.preventDefault();
+  setPassword(document.getElementById("password").value);
+  try {
+    await api("/api/login", "POST");
+    document.getElementById("password").value = "";
+    signedIn();
+  } catch (error) {
+    document.getElementById("loginMessage").innerText = error.message;
+  }
+}
+
+function signOut() {
+  setPassword("");
+  signedOut();
+}
+
+// Show the login box or the manage page
+function signedIn() {
+  document.getElementById("login").hidden = true;
+  document.getElementById("manage").hidden = false;
+  document.getElementById("loginMessage").innerText = "";
+  showTable();
+}
+function signedOut() {
+  document.getElementById("manage").hidden = true;
+  document.getElementById("login").hidden = false;
+}
+
+loadPumpList().then(() => (getPassword() ? signedIn() : signedOut()));

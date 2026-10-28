@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Manage readings</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261029-2">
 </head>
 <body>
   <header>
@@ -19,7 +19,18 @@
     <select id="pump"></select>
   </header>
 
-  <main>
+  <main id="login" hidden>
+    <h2>Sign in</h2>
+    <p>Enter the admin password to add, edit or delete readings.</p>
+    <form onsubmit="signIn(event)">
+      <input id="password" type="password" placeholder="Admin password" autocomplete="current-password" required>
+      <button>Sign in</button>
+    </form>
+    <p id="loginMessage" class="error"></p>
+  </main>
+
+  <main id="manage" hidden>
+    <p><button type="button" onclick="signOut()">Sign out</button></p>
     <h2>Add a reading</h2>
     <form onsubmit="addReading(event)">
       <input id="vibration" type="number" step="any" placeholder="Vibration (mm/s)" required>
@@ -36,7 +47,7 @@
     </table>
   </main>
 
-  <script src="api.js?v=20261029-1"></script>
-  <script src="manage.js"></script>
+  <script src="api.js?v=20261029-2"></script>
+  <script src="manage.js?v=20261029-2"></script>
 </body>
 </html>

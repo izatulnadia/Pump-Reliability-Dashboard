@@ -1,10 +1,12 @@
 # The web server (FastAPI). It lists what the frontend can ask for.
 # Run:  python main.py     then open  http://127.0.0.1:8000
+import os
+import secrets
 from pathlib import Path
 
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -83,24 +85,37 @@ class NewReading(Values):                 # a new reading also needs the pump na
     pump: str
 
 
+# Admin password: set ADMIN_PASSWORD in Render (or your .env).
+# Create, update and delete only work when the right password is sent.
+def check_password(x_admin_password: str = Header(default="")):
+    password = os.getenv("ADMIN_PASSWORD", "")
+    if not password or not secrets.compare_digest(x_admin_password.encode(), password.encode()):
+        raise HTTPException(401, "Wrong or missing admin password.")
+
+
+@app.post("/api/login", dependencies=[Depends(check_password)])  # check the password
+def login():
+    return {"ok": True}
+
+
 @app.get("/api/readings")                                     # READ
 def read_readings(pump: str):
     return database.get_newest(pump, 15)
 
 
-@app.post("/api/readings")                                    # CREATE
+@app.post("/api/readings", dependencies=[Depends(check_password)])        # CREATE
 def create_reading(item: NewReading):
     database.add_reading(item.model_dump())
     return {"ok": True}
 
 
-@app.put("/api/readings/{reading_id}")                        # UPDATE
+@app.put("/api/readings/{reading_id}", dependencies=[Depends(check_password)])     # UPDATE
 def update_reading(reading_id: int, values: Values):
     database.update_reading(reading_id, values.model_dump())
     return {"ok": True}
 
 
-@app.delete("/api/readings/{reading_id}")                     # DELETE
+@app.delete("/api/readings/{reading_id}", dependencies=[Depends(check_password)])  # DELETE
 def delete_reading(reading_id: int):
     database.delete_reading(reading_id)
     return {"ok": True}
