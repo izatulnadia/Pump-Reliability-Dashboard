@@ -29,7 +29,7 @@ async function askAI() {
   const box = document.getElementById("insight");
   box.innerText = "Asking AI...";
   try {
-    const response = await fetch("/api/insight/" + currentPump(), {
+    const response = await fetch(API_BASE + "/api/insight/" + currentPump(), {
       signal: AbortSignal.timeout(50000),
     });
     const responseBody = await response.text();

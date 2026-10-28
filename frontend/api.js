@@ -4,8 +4,13 @@
 //   url    = the address, for example "/api/pumps"
 //   method = GET (read), POST (create), PUT (update) or DELETE
 //   body   = the data to send (only for POST and PUT)
+// Where the backend lives. On Render (or your own PC) the page and the backend
+// are the same site, so "" works. Anywhere else (e.g. Cloudflare), use Render.
+const SAME_SITE = location.hostname.endsWith("onrender.com") || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const API_BASE = SAME_SITE ? "" : "https://pump-reliability-dashboard.onrender.com";
+
 async function api(url, method = "GET", body = null) {
-  const response = await fetch(url, {
+  const response = await fetch(API_BASE + url, {
     method: method,
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : null,

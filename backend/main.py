@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -15,6 +16,9 @@ from fake_data import make_reading
 from settings import PUMPS
 
 app = FastAPI()
+
+# Let the frontend call the API from another site (e.g. Cloudflare Pages).
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
 @app.get("/health")                                           # for Render's health check
