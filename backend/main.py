@@ -103,22 +103,49 @@ def read_readings(pump: str):
     return database.get_newest(pump, 15)
 
 
+FIELDS = ["vibration", "bearing_temp", "discharge_pressure", "flow"]
+
+
+def describe(row):                        # "vibration 12.0, bearing_temp 115, ..."
+    return ", ".join(f"{field} {row[field]}" for field in FIELDS)
+
+
 @app.post("/api/readings", dependencies=[Depends(check_password)])        # CREATE
 def create_reading(item: NewReading):
-    database.add_reading(item.model_dump())
+    row = item.model_dump()
+    new_id = database.add_reading(row)
+    database.add_log("Added", item.pump, new_id, describe(row))
     return {"ok": True}
 
 
 @app.put("/api/readings/{reading_id}", dependencies=[Depends(check_password)])     # UPDATE
 def update_reading(reading_id: int, values: Values):
-    database.update_reading(reading_id, values.model_dump())
+    old = database.get_reading(reading_id)
+    if old is None:
+        raise HTTPException(404, "Reading not found.")
+    new = values.model_dump()
+    database.update_reading(reading_id, new)
+    changes = [f"{f} {old[f]} → {new[f]}" for f in FIELDS if old[f] != new[f]]
+    database.add_log("Edited", old["pump"], reading_id, ", ".join(changes) or "no change")
     return {"ok": True}
 
 
 @app.delete("/api/readings/{reading_id}", dependencies=[Depends(check_password)])  # DELETE
 def delete_reading(reading_id: int):
+    old = database.get_reading(reading_id)
+    if old is None:
+        raise HTTPException(404, "Reading not found.")
     database.delete_reading(reading_id)
+    database.add_log("Deleted", old["pump"], reading_id, describe(old))
     return {"ok": True}
+
+
+@app.get("/api/log", dependencies=[Depends(check_password)])  # HISTORY of changes
+def read_log(pump: str):
+    try:
+        return database.get_log(pump, 30)
+    except Exception:
+        raise HTTPException(503, "History table missing. Run the activity_log part of supabase/schema.sql.")
 
 
 # ---------------------------------------------------------------

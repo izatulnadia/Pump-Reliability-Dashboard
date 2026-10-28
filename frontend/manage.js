@@ -20,6 +20,38 @@ async function showTable() {
     </tr>`;
   }
   document.getElementById("table").innerHTML = html;
+  showLog();
+}
+
+// HISTORY: who added, edited or deleted which reading
+async function showLog() {
+  const message = document.getElementById("logMessage");
+  let lines;
+  try {
+    lines = await api("/api/log?pump=" + currentPump());
+  } catch (error) {
+    message.innerText = "Could not load the history: " + error.message;
+    return;
+  }
+  if (!Array.isArray(lines)) {                  // e.g. the activity_log table is missing
+    message.innerText = "Could not load the history. Has the activity_log table been made in Supabase?";
+    return;
+  }
+  message.innerText = lines.length ? "" : "No changes yet.";
+  let html = "";
+  for (const line of lines) {
+    const time = new Date(line.time).toLocaleString();
+    html += `<tr>
+      <td>${time}</td><td>${line.action}</td><td>${line.reading_id ?? ""}</td><td>${escapeHtml(line.details ?? "")}</td>
+    </tr>`;
+  }
+  document.getElementById("log").innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.innerText = text;
+  return div.innerHTML;
 }
 
 // CREATE: add the reading typed in the form
