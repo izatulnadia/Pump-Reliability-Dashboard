@@ -16,6 +16,12 @@ from settings import PUMPS
 
 app = FastAPI()
 
+
+@app.get("/health")                                           # for Render's health check
+def health():
+    return {"status": "ok"}
+
+
 def analyse_pump(pump):
     """Read the readings from Supabase and analyse them."""
     if pump not in PUMPS:
